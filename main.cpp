@@ -4,14 +4,35 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-_bitmap master_bm;
+constexpr uint cc0 = 0xffffffff; // цвет фона
+constexpr uint cc1 = 0xff000000; // цвет линий
+
+_bitmap paper;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void draw_the_staff()
+{
+	constexpr i64 x_offset = 10;
+	constexpr i64 delta_line = 3;
+	constexpr i64 start_y = delta_line * 3;
+	constexpr i64 staff_size = delta_line * 10;
+	const i64 staff_count = paper.size.y / staff_size;
+	paper.clear(cc0);
+	for (auto i = 0; i < staff_count; i++)
+	{
+		for (auto j = 0; j < 5; j++)
+		{
+			auto y = i * staff_size + start_y + j * delta_line;
+			paper.line({ x_offset, y }, { paper.size.x - x_offset, y }, cc1);
+		}
+	}
+}
+
 void draw(_isize r)
 {
-	if (!master_bm.resize(r)) return;
-	master_bm.clear(0xff000000);
+	if (!paper.resize(r)) return;
+	draw_the_staff();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +51,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		RECT rect;
 		GetClientRect(hWnd, &rect);
 		draw({ rect.right, rect.bottom });
-		BitBlt(hdc, 0, 0, rect.right, rect.bottom, master_bm.hdc, 0, 0, SRCCOPY);
+		BitBlt(hdc, 0, 0, rect.right, rect.bottom, paper.hdc, 0, 0, SRCCOPY);
 		ReleaseDC(hWnd, hdc);
 		EndPaint(hWnd, &ps);
 		return 0;
