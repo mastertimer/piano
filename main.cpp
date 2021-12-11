@@ -11,6 +11,24 @@ _bitmap paper;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void draw_curly_brace(i64 x, i64 y1, i64 y2)
+{
+	double xx = x + 0.5;
+	double yy1 = y1 + 0.5;
+	double yy2 = y2 + 0.5;
+	double dy = y2 - y1;
+	double dx = 0.1 * dy;
+	double k1 = 0.6;
+	double k2 = 0.5;
+	double k3 = 0.45;
+	paper.lines({ xx, yy1 }, { xx - dx * k1, yy1 + dx * k1 }, 1.5, cc1);
+	paper.lines({ xx, yy2 }, { xx - dx * k1, yy2 - dx * k1 }, 1.5, cc1);
+	paper.lines({ xx - dx * k2, yy1 + dy * k3 }, { xx - dx * k1, yy1 + dx * k1 }, 1.5, cc1);
+	paper.lines({ xx - dx * k2, yy2 - dy * k3 }, { xx - dx * k1, yy2 - dx * k1 }, 1.5, cc1);
+	paper.lines({ xx - dx * k2, yy1 + dy * k3 }, { xx - dx, yy1 + dy * 0.5 }, 1.5, cc1);
+	paper.lines({ xx - dx * k2, yy2 - dy * k3 }, { xx - dx, yy2 - dy * 0.5 }, 1.5, cc1);
+}
+
 void draw_the_staff()
 {
 	constexpr i64 delta_line = 6;
@@ -41,8 +59,10 @@ void draw_the_staff()
 			auto y = y_start + i * staff_y_size + start_y;
 			paper.line({ x1, y }, { x1, y + 4 * delta_line + delta5 }, cc1);
 			paper.line({ x2, y }, { x2, y + 4 * delta_line + delta5 }, cc1);
+			draw_curly_brace(x1, y, y + 4 * delta_line + delta5);
 			paper.text({ x1 + delta_line / 2, y - 3 * delta_line }, L"𝄞", 9 * delta_line, cc1);
 			paper.text({ x1 + delta_line / 2, y - 2 * delta_line + delta5 }, L"𝄢", 7 * delta_line, cc1);
+			paper.text({ x1 + delta_line * 5, y - 3 * delta_line }, L"♩", 9 * delta_line, cc1);
 		}
 	}
 }
@@ -57,9 +77,6 @@ void draw(_isize r)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	paper.set_font(L"Segoe UI Symbol", false);
-	static bool run_timer = true;
-	static bool tracking_mouse = false;
 	switch (message)
 	{
 	case WM_PAINT:
@@ -84,6 +101,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+	paper.set_font(L"Segoe UI Symbol", false);
 	static TCHAR szWindowClass[] = L"win64app";
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
