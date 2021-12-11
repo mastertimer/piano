@@ -1,6 +1,7 @@
 ﻿#define NOMINMAX
 #include <windows.h>
 #include "graphics.h"
+#include "RtMidi.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -8,6 +9,8 @@ constexpr uint cc0 = 0xffffffff; // цвет фона
 constexpr uint cc1 = 0xff000000; // цвет линий
 
 _bitmap paper;
+RtMidiIn midi;
+HWND hWnd;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,12 +68,48 @@ void draw_the_staff()
 			paper.text({ x1 + delta_line * 5, y - 3 * delta_line }, L"♩", 9 * delta_line, cc1);
 		}
 	}
+	if (midi.isPortOpen())
+		paper.text16({ 2LL, 0LL }, "порт окрыт", 0xff00ff00);
+	else
+		paper.text16({ 2LL, 0LL }, "порт закрыт", 0xffff0000);
 }
 
 void draw(_isize r)
 {
 	if (!paper.resize(r)) return;
 	draw_the_staff();
+}
+
+void paint()
+{
+	HDC hdc = GetDC(hWnd);
+	RECT rect;
+	GetClientRect(hWnd, &rect);
+	draw({ rect.right, rect.bottom });
+	BitBlt(hdc, 0, 0, rect.right, rect.bottom, paper.hdc, 0, 0, SRCCOPY);
+	ReleaseDC(hWnd, hdc);
+}
+
+void fun_piano(double deltatime, std::vector< unsigned char >* message, void* userData)
+{
+	std::string s;
+	for (auto i : *message)
+	{
+		s += std::to_string(int(i)) + " ";
+	}
+	static i64 y = 0;
+	y += 13;
+	paper.text16({ 2LL, y }, s, cc0);
+	paint();
+}
+
+void start_midi()
+{
+	unsigned int n_ports = midi.getPortCount();
+	if (n_ports == 0) return;
+	midi.openPort(0);
+	midi.setCallback(&fun_piano, nullptr);
+	midi.ignoreTypes(false, true, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,12 +122,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		PAINTSTRUCT ps;
 		BeginPaint(hWnd, &ps);
-		HDC hdc = GetDC(hWnd);
-		RECT rect;
-		GetClientRect(hWnd, &rect);
-		draw({ rect.right, rect.bottom });
-		BitBlt(hdc, 0, 0, rect.right, rect.bottom, paper.hdc, 0, 0, SRCCOPY);
-		ReleaseDC(hWnd, hdc);
+		paint();
 		EndPaint(hWnd, &ps);
 		return 0;
 	}
@@ -102,6 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
 	paper.set_font(L"Segoe UI Symbol", false);
+	start_midi();
 	static TCHAR szWindowClass[] = L"win64app";
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -117,7 +152,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = 0;
 	if (!RegisterClassEx(&wcex)) return 2;
-	HWND hWnd = CreateWindow(szWindowClass, L"piano", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1600, 800,
+	hWnd = CreateWindow(szWindowClass, L"piano", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1600, 800,
 		NULL, NULL, hInstance, NULL);
 	if (!hWnd) return 3;
 	ShowWindow(hWnd, nCmdShow);
