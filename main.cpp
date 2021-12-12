@@ -63,9 +63,9 @@ void draw_the_staff()
 			paper.line({ x1, y }, { x1, y + 4 * delta_line + delta5 }, cc1);
 			paper.line({ x2, y }, { x2, y + 4 * delta_line + delta5 }, cc1);
 			draw_curly_brace(x1, y, y + 4 * delta_line + delta5);
-			paper.text({ x1 + delta_line / 2, y - 3 * delta_line }, L"𝄞", 9 * delta_line, cc1);
-			paper.text({ x1 + delta_line / 2, y - 2 * delta_line + delta5 }, L"𝄢", 7 * delta_line, cc1);
-			paper.text({ x1 + delta_line * 5, y - 3 * delta_line }, L"♩", 9 * delta_line, cc1);
+			paper.text({ x1 + delta_line / 2, y - 3 * delta_line }, L"&", 10 * delta_line, cc1);
+			paper.text({ x1 + delta_line / 2, y - 5 * delta_line + delta5 }, L"?", 10 * delta_line, cc1);
+			paper.text({ x1 + delta_line * 5, y - 3 * delta_line }, L"q", 9 * delta_line, cc1);
 		}
 	}
 	if (midi.isPortOpen())
@@ -135,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-	paper.set_font(L"Segoe UI Symbol", false);
+	paper.set_font(L"Maestro", false);
 	start_midi();
 	static TCHAR szWindowClass[] = L"win64app";
 	WNDCLASSEX wcex;
