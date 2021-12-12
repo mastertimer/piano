@@ -99,7 +99,7 @@ void fun_piano(double deltatime, std::vector< unsigned char >* message, void* us
 	}
 	static i64 y = 0;
 	y += 13;
-	paper.text16({ 2LL, y }, s, cc0);
+	paper.text16({ 2LL, y }, s, cc1);
 	paint();
 }
 
