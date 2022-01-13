@@ -118,6 +118,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4244</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\mutator\library</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +136,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4244</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\mutator\library</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="basic.cpp" />
+    <ClCompile Include="..\mutator\library\basic.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
@@ -153,7 +155,7 @@
     <ClCompile Include="xml.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic.h" />
+    <ClInclude Include="..\mutator\library\basic.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="RtMidi.h" />
