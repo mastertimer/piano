@@ -149,7 +149,7 @@
   <ItemGroup>
     <ClCompile Include="..\mutator\library\basic.cpp" />
     <ClCompile Include="..\mutator\library\geometry.cpp" />
-    <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="..\mutator\library\graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RtMidi.cpp" />
     <ClCompile Include="xml.cpp" />
@@ -157,7 +157,7 @@
   <ItemGroup>
     <ClInclude Include="..\mutator\library\basic.h" />
     <ClInclude Include="..\mutator\library\geometry.h" />
-    <ClInclude Include="graphics.h" />
+    <ClInclude Include="..\mutator\library\graphics.h" />
     <ClInclude Include="RtMidi.h" />
     <ClInclude Include="xml.h" />
   </ItemGroup>

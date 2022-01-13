@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graphics.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="RtMidi.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -33,11 +30,11 @@
     <ClCompile Include="..\mutator\library\geometry.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="..\mutator\library\graphics.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="RtMidi.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\mutator\library\geometry.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mutator\library\graphics.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
