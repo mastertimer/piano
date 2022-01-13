@@ -85,13 +85,13 @@ bool save_file(std::wstring_view fn, const char* data, i64 n)
 
 bool load_file(std::wstring_view fn, char** data, i64* n)
 {
-	*data = 0;
+	*data = nullptr;
 	*n    = 0;
 	std::ifstream f(fn.data(), std::ofstream::binary);
 	if (!f) return false;
 	f.seekg(0, f.end);
 	auto siz = f.tellg();
-	*data    = new char[siz];
+	*data = new char[int(siz) + 1]; // +1 - быстрое решение для использования в строке
 	f.seekg(0);
 	f.read(*data, siz);
 	if (!f.good())
@@ -101,24 +101,6 @@ bool load_file(std::wstring_view fn, char** data, i64* n)
 		return false;
 	}
 	*n = siz;
-	return true;
-}
-
-bool load_file(std::wstring_view fn, std::vector<uchar>& res)
-{
-	res.clear();
-	std::ifstream f(fn.data(), std::ofstream::binary);
-	if (!f) return false;
-	f.seekg(0, f.end);
-	auto siz = f.tellg();
-	res.resize(siz);
-	f.seekg(0);
-	f.read((char*)res.data(), siz);
-	if (!f.good())
-	{
-		res.clear();
-		return false;
-	}
 	return true;
 }
 
