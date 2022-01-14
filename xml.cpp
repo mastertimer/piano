@@ -83,7 +83,7 @@ void _xml_element::parse_parameters(i64 n, i64 k, std::string& name_, std::vecto
 	parameters.clear();
 	k--;
 	i64 sp = find_symbol(n, ' ', k);
-	i64 kn = (sp < 0) ? k : sp;
+	i64 kn = (sp < 0) ? k : (sp - 1);
 	auto ww = data[kn];
 	data[kn] = 0;
 	name_ = &data[n];
