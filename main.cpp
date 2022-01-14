@@ -1,9 +1,17 @@
 ﻿#define NOMINMAX
 #include <windows.h>
+#include <filesystem>
+
 #include "graphics.h"
 #include "RtMidi.h"
+#include "xml.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+	constexpr wchar_t file_notes[] = L"..\\..\\data\\s14.xml";
+}
 
 constexpr uint cc0 = 0xffffffff; // цвет фона
 constexpr uint cc1 = 0xff000000; // цвет линий
@@ -112,6 +120,12 @@ void start_midi()
 	midi.ignoreTypes(false, true, true);
 }
 
+void load_notes()
+{
+	std::wstring fn = exe_path + file_notes;
+	_xml_element ee(fn);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -135,8 +149,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+	{
+		wchar_t buffer[MAX_PATH];
+		GetModuleFileName(hInstance, buffer, MAX_PATH);
+		std::filesystem::path fn = buffer;
+		fn.remove_filename();
+		exe_path = fn;
+	}
 	paper.set_font(L"Maestro", false);
 	start_midi();
+	load_notes();
 	static TCHAR szWindowClass[] = L"win64app";
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);

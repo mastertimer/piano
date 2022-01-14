@@ -9,7 +9,7 @@ _xml_element::~_xml_element()
 
 _xml_element::_xml_element(std::wstring_view file_name)
 {
-	load_file(file_name, &data, &size);
+	load_file(file_name, &data, &size, 1);
 	parse();
 }
 
