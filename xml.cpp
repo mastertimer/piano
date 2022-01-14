@@ -2,15 +2,28 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+	const _xml_element zero_xml_element;
+}
+
+const _xml_element& _xml_element::find(std::string_view name_) const
+{
+	for (auto& i : child) if (i.name == name_) return i;
+	return zero_xml_element;
+}
+
 _xml_element::~_xml_element()
 {
 	if (!parent) delete[] data;
 }
 
-_xml_element::_xml_element(std::wstring_view file_name)
+bool _xml_element::load_from_file(std::wstring_view file_name)
 {
-	load_file(file_name, &data, &size, 1);
+	if (parent || data) return false;
+	if (!load_file(file_name, &data, &size, 1)) return false;
 	parse();
+	return true;
 }
 
 i64 _xml_element::find_symbol(i64 n, char c, i64 k)

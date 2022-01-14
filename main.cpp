@@ -11,6 +11,7 @@
 namespace
 {
 	constexpr wchar_t file_notes[] = L"..\\..\\s14.xml";
+	_xml_element notes;
 }
 
 constexpr uint cc0 = 0xffffffff; // цвет фона
@@ -76,16 +77,26 @@ void draw_the_staff()
 			paper.text({ x1 + delta_line * 5, y - 3 * delta_line }, L"q", 9 * delta_line, cc1);
 		}
 	}
-	if (midi.isPortOpen())
-		paper.text16({ 2LL, 0LL }, "порт окрыт", 0xff00ff00);
-	else
-		paper.text16({ 2LL, 0LL }, "порт закрыт", 0xffff0000);
+}
+
+void draw_notes()
+{
+	auto& e1 = notes.find("score-partwise").find("part");
+	for (auto& i : e1.child)
+	{
+		if (i.name != "measure") continue;
+	}
 }
 
 void draw(_isize r)
 {
 	if (!paper.resize(r)) return;
 	draw_the_staff();
+	draw_notes();
+	if (midi.isPortOpen())
+		paper.text16({ 2LL, 0LL }, "порт окрыт", 0xff00ff00);
+	else
+		paper.text16({ 2LL, 0LL }, "порт закрыт", 0xffff0000);
 }
 
 void paint()
@@ -120,12 +131,6 @@ void start_midi()
 	midi.ignoreTypes(false, true, true);
 }
 
-void load_notes()
-{
-	std::wstring fn = exe_path + file_notes;
-	_xml_element ee(fn);
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -156,9 +161,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		fn.remove_filename();
 		exe_path = fn;
 	}
+	notes.load_from_file(exe_path + file_notes);
 	paper.set_font(L"Maestro", false);
 	start_midi();
-	load_notes();
 	static TCHAR szWindowClass[] = L"win64app";
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
