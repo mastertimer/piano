@@ -10,7 +10,7 @@
 
 namespace
 {
-	constexpr wchar_t file_notes[] = L"..\\..\\data\\s14.xml";
+	constexpr wchar_t file_notes[] = L"..\\..\\s14.xml";
 }
 
 constexpr uint cc0 = 0xffffffff; // цвет фона

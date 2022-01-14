@@ -21,9 +21,17 @@ i64 _xml_element::find_symbol(i64 n, char c, i64 k)
 	return -1;
 }
 
+i64 _xml_element::find_not_symbol(i64 n, char c, i64 k)
+{
+	if (n < 0) return -1;
+	if (k < 0 || k > size) k = size;
+	for (i64 i = n; i < k; i++) if (data[i] != c) return i;
+	return -1;
+}
+
 void _xml_element::parse()
 {
-	std::string name;
+	std::string name2;
 	std::vector<_xml_parameter> parameters;
 	i64 n = 0;
 	for (;;)
@@ -37,27 +45,27 @@ void _xml_element::parse()
 			n = k;
 			continue;
 		}
-		parse_parameters(n, k, name, parameters);
+		parse_parameters(n, k, name2, parameters);
 		if (data[k - 2] == '/')
 		{
-			child.emplace_back(this, name, parameters, nullptr, 0);
+			child.emplace_back(this, name2, parameters, nullptr, 0);
 			n = k;
 		}
 		else
 		{
-			std::string s = "</" + name + ">";
+			std::string s = "</" + name2 + ">";
 			char ww = data[size];
 			data[size] = 0;
 			auto res = strstr(&data[k], s.c_str());
 			data[size] = ww;
 			if (!res) break;
-			child.emplace_back(this, name, parameters, &data[k], res - &data[k]);
+			child.emplace_back(this, name2, parameters, &data[k], res - &data[k]);
 			n = res - data + s.size();
 		}
 	}
 }
 
-void _xml_element::parse_parameters(i64 n, i64 k, std::string& name, std::vector<_xml_parameter>& parameters)
+void _xml_element::parse_parameters(i64 n, i64 k, std::string& name_, std::vector<_xml_parameter>& parameters)
 {
 	parameters.clear();
 	k--;
@@ -65,8 +73,9 @@ void _xml_element::parse_parameters(i64 n, i64 k, std::string& name, std::vector
 	i64 kn = (sp < 0) ? k : sp;
 	auto ww = data[kn];
 	data[kn] = 0;
-	name = &data[n];
+	name_ = &data[n];
 	data[kn] = ww;
+	sp = find_not_symbol(sp, ' ', k);
 	while (sp >= 0)
 	{
 		i64 ravno = find_symbol(sp, '=', k);
@@ -80,14 +89,16 @@ void _xml_element::parse_parameters(i64 n, i64 k, std::string& name, std::vector
 		parameters.emplace_back(&data[sp], &data[ravno + 1]);
 		data[ravno - 1] = ww1;
 		data[dk2 - 1] = ww2;
+		sp = find_not_symbol(dk2, ' ', k);
 	}
 }
 
-_xml_element::_xml_element(_xml_element* parent_, std::string& name, std::vector<_xml_parameter>& param_, char* data_,
+_xml_element::_xml_element(_xml_element* parent_, std::string& name_, std::vector<_xml_parameter>& param_, char* data_,
 	i64 size_)
 	: data{data_}
 	, size{size_}
 	, parent{parent_}
+	, name{name_}
 	, param{std::move(param_)}
 {
 	parse();
