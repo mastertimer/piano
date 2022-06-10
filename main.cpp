@@ -55,7 +55,7 @@ void draw_the_staff()
 	i64 staff_y_count = std::max(paper.size.y / staff_y_size, 1LL);
 	i64 x_start = (paper.size.x - staff_x_count * staff_x_size) / 2;
 	i64 y_start = (paper.size.y - staff_y_count * staff_y_size) / 2;
-	paper.clear(cc0);
+	paper.clear({ cc0 });
 	for (auto p = 0; p < staff_x_count; p++)
 	{
 		auto x1 = x_start + p * staff_x_size + x_offset;
